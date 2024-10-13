@@ -1,0 +1,33 @@
+---
+# tasks file for package_add
+- name: Update yum Packages
+  yum:
+    name: "*"
+    state: latest
+  when: ansible_os_family == "RedHat"
+  register: yum_update_reg
+- name: Print yum output
+  debug:
+    msg: "{{ yum_update_reg }}"
+  when: ansible_os_family == "RedHat"
+- name: Update apt Packages
+  apt:
+    name: "*"
+    state: latest
+  when: ansible_os_family == "Debian"
+  register: apt_update_reg
+- name: Print apt output
+  debug:
+    msg: "{{ apt_update_reg }}"
+  when: ansible_os_family == "Debian"
+- name: Install EPEL
+  yum:
+    name: epel-release
+    state: latest
+  when: ansible_os_family == "RedHat"
+- name: Install Common Packages
+  package:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - "{{ common_packages }}"

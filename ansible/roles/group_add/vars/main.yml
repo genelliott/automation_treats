@@ -1,0 +1,5 @@
+---
+# vars file for group_add
+groups_admins:
+  - level1_admins
+  - level2_admins

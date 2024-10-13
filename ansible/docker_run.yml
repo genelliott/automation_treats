@@ -1,0 +1,14 @@
+---
+- hosts: "{{ target_hosts }}"
+  become: true
+  remote_user: nix-admin
+  gather_facts: no
+  vars:
+    target_hosts: linux # set to the appropriate target
+  pre_tasks:
+    - name: Gather Selected Facts
+      setup:
+        gather_subset:
+          - distribution
+  roles:
+    - docker_run

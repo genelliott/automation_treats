@@ -1,0 +1,7 @@
+---
+# tasks file for group_add
+- name: Add Group
+  group:
+    name: "{{ item }}"
+  with_items: 
+    - "{{ groups_admins }}"

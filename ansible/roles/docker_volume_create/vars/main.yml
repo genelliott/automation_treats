@@ -1,0 +1,7 @@
+---
+# vars file for docker_volume_create
+
+docker_volumes:
+  device: /dev/vdb1
+  volumes:
+    - database

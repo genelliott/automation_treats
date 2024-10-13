@@ -1,0 +1,16 @@
+---
+# vars file for package_add
+common_packages:
+  - htop
+  - vim
+  - ruby
+  - curl
+  - wget
+  - nload
+
+database_packages:
+  - mariadb-server
+
+web_packages:
+  - nginx
+

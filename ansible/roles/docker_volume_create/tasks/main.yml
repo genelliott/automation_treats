@@ -1,0 +1,13 @@
+---
+# tasks file for docker_volume_create
+- name: Create docker volume for database servers
+  when: '"db" in roles and "docker" in roles'
+  block:
+    # The device must already be formatted with btrfs e.g. mkfs.btrfs /dev/sdb1
+    - name: Create volume
+      docker_volume:
+        name: "{{ item }}"
+        driver_options:
+          type: btrfs
+          device: "{{ docker_volumes.device }}"
+      with_items: "{{ docker_volumes.volumes }}"

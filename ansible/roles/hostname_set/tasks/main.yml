@@ -1,0 +1,8 @@
+---
+# tasks file for hostname_set
+- name: Print new hostname 
+  debug:
+    msg: ">> Setting hostname to: {{ hostname }}"
+- name: Set Hostname
+  hostname:
+    name: "{{ hostname }}"

@@ -1,0 +1,31 @@
+[web_servers]
+rocky9-web01 ansible_host=192.168.122.100 timezone=Australia/Sydney hostname=rocky9-web01.test.local
+
+[web_servers:vars]
+roles = ["web", "lb", "docker"]
+
+
+[db_servers]
+ubuntu-db01 ansible_host=192.168.122.200 timezone=Australia/Melbourne hostname=ubuntu-db01.test.local
+
+[db_servers:vars]
+roles = ["db", "kafka", "docker"]
+
+[linux:children]
+web_servers
+db_servers
+#load_balancers
+#kafka_servers
+
+#[load_balancers]
+#rocky9-lb ansible_host=10.73.16.135 timezone=Australia/Sydney hostname=rocky9-lb.test.local
+
+#[load_balancers:vars]
+#roles = ["lb", "docker"]
+
+#[kafka_servers]
+#ubuntu-kafka ansible_host=10.73.16.237 timezone=Australia/Melbourne hostname=ubuntu-kafka.test.local
+
+#[kafka_servers:vars]
+#roles = ["kafka", "docker"]
+

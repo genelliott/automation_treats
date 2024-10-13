@@ -1,0 +1,19 @@
+---
+# tasks file for timezone_set
+- name: Print new timezone 
+  debug:
+    msg: ">> Setting timezone to: {{ timezone }}"
+- name: Set Timezone
+  timezone:
+    name: "{{ timezone }}"
+  register: timezone_reg
+- name: Restart crond on RedHat based linux
+  service:
+    name: crond
+    state: restarted
+  when: timezone_reg.changed == true and ansible_os_family == "RedHat"
+- name: Restart crond on Debian based linux
+  service:
+    name: cron
+    state: restarted
+  when: timezone_reg.changed == true and ansible_os_family == "Debian"

@@ -1,0 +1,103 @@
+---
+# tasks file for docker_run
+# based on: docker run --name pgsql01 --hostname pgsql01 -e POSTGRES_PASSWORD=PASSWORDHERE -p 5432:5432 -v database:/var/lib/postgresql/data -d --restart unless-stopped postgres
+- name: Create postgres docker container
+  when: '"db" in roles and "docker" in roles'
+  block:
+    - name: Create postgres container
+      docker_container:
+        name: postgres
+        image: postgres:latest
+        volumes: 
+          - database:/var/lib/postgresql/data
+        env:
+          # created using: ansible-vault encrypt_string POSTGRESPASSWORDHERE
+          POSTGRES_PASSWORD: !vault |
+              $ANSIBLE_VAULT;1.1;AES256
+              38376138343064323832613631366333366162616266313233353362386631313566323532623835
+              3633303732393866386138346437666431313039336632650a353632636364393833613133636262
+              66633663313165363562396566393163626166643238613130363765313531363436306463303961
+              6161633332616439660a346561386564663938663437343262613835643439323165316537666461
+              6266
+        ports: 
+          - 5432:5432
+        restart_policy: unless-stopped
+        networks:
+          - name: test_local
+      register: postgres_reg
+    - name: Print postgres docker creation output
+      debug:
+        msg: "{{ postgres_reg }}"
+      when: debug is defined and debug == true
+    - name: Install postgresql-client on Debian based linux
+      apt:
+        name: postgresql-client
+        state: latest
+      when: 'ansible_os_family == "Debian"'
+    - name: Install postgresql-client on RedHat based linux
+      apt:
+        name: postgresql
+        state: latest
+      when: 'ansible_os_family == "RedHat"'
+
+- name: Create nginx docker container
+  when: '"web" in roles and "docker" in roles'
+  block:
+    - name: Create nginx container
+      docker_container:
+        name: "{{ item.name }}"
+        image: nginx:latest
+        volumes: "{{ item.volumes }}"
+        #ports: "{{ item.ports }}"
+        restart_policy: unless-stopped
+        recreate: true
+        networks:
+          - name: test_local
+      with_items:
+        - name: nginx01
+          ports:
+            - 8001:80
+          volumes:
+            - web01:/usr/share/nginx/html
+        - name: nginx01-dev
+          ports:
+            - 8101:80
+          volumes:
+            - web101:/usr/share/nginx/html
+        - name: nginx02
+          ports:
+            - 8002:80
+          volumes:
+            - web02:/usr/share/nginx/html
+        - name: nginx02-dev
+          ports:
+            - 8102:80
+          volumes:
+            - web102:/usr/share/nginx/html
+
+- name: Create haproxy docker container
+  when: '"lb" in roles and "docker" in roles'
+  block:
+    - name: Create data directory
+      file:
+        path: /data/haproxy
+        recurse: yes
+        state: directory
+        mode: '0755'
+    - name: Copy haproxy.cfg 
+      template:
+        src: haproxy.cfg.j2
+        dest: /data/haproxy/haproxy.cfg
+        mode: '0644'
+    - name: Create haproxy container
+      docker_container:
+        name: lb
+        image: haproxy:latest
+        volumes: /data/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+        ports: 
+          - 8080:8080
+          - 8081:8081
+        restart_policy: unless-stopped
+        recreate: true
+        networks:
+          - name: test_local

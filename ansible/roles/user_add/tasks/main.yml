@@ -1,0 +1,28 @@
+---
+# tasks file for user_add
+- name: Add Level 1 and Level 2 Admins
+  user: 
+    name: "{{ item.key }}"
+    password: "{{ item.value.password }}"
+    groups: "{{ item.value.groups }}"
+  no_log: true
+  with_dict:
+    - "{{ users_admins }}"
+- name: Add Level 3 Admins for RedHat based linux
+  user: 
+    name: "{{ item.key }}"
+    password: "{{ item.value.password }}"
+    groups: "{{ item.value.groups }}"
+  #no_log: true
+  when: ansible_os_family == "RedHat"
+  with_dict:
+    - "{{ users_admins_level3_redhat }}"
+- name: Add Level 3 Admins for Debian based linux
+  user: 
+    name: "{{ item.key }}"
+    password: "{{ item.value.password }}"
+    groups: "{{ item.value.groups }}"
+  #no_log: true
+  when: ansible_os_family == "Debian"
+  with_dict:
+    - "{{ users_admins_level3_debian }}"

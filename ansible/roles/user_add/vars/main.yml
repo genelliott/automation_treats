@@ -1,0 +1,36 @@
+---
+# vars file for user_add
+# use the pass tools/generate_encrypted_password.py to generate an encrypted password
+users_admins_level3_redhat:
+  marge.simpson:
+    name: Marge Simpson
+    password: $6$becHKMhor0ZgGkRR$9XIrU3XpOY5BDAwyXIf4NH0Buf7hkIK/tSjbKAEDQH2JnhHpcbJXnVHnlH1vUlHYYM.Whv2zinUsOJWmwtpQe1
+    groups: wheel
+  homer.simpson:
+    name: Homer Simpson
+    password: $6$on.v0Z1cbGienQxL$uViwL7Vd4666budYe.dQ7IaHqwygd0UobivQ4ZAp2ti8gC7ROpLThDlSWhwpNuwG57vXWdvWucW47enpWXSc3/
+    groups: wheel
+
+users_admins_level3_debian:
+  marge.simpson:
+    name: Marge Simpson
+    password: $6$becHKMhor0ZgGkRR$9XIrU3XpOY5BDAwyXIf4NH0Buf7hkIK/tSjbKAEDQH2JnhHpcbJXnVHnlH1vUlHYYM.Whv2zinUsOJWmwtpQe1
+    groups: sudo
+  homer.simpson:
+    name: Homer Simpson
+    password: $6$on.v0Z1cbGienQxL$uViwL7Vd4666budYe.dQ7IaHqwygd0UobivQ4ZAp2ti8gC7ROpLThDlSWhwpNuwG57vXWdvWucW47enpWXSc3/
+    groups: sudo
+
+users_admins:
+  maggie.simpson:
+    name: Maggie Simpson
+    password: $6$cxN197onOLBeD98U$X8r57OTMBTIJKVTSTZiMmunwUvh9Gue2GJrTM8nHFCeYlZw.wc/4qLXZDtcXbME09EmHiXgwy7dNKF78PSDoM/
+    groups: level1_admins
+  lisa.simpson:
+    name: List Simpson
+    password: $6$zwqEIvb18niPXJtG$gqnlhjvvMm3x0yZplnGHXCeBfbbbQZcg6c/.Nf5jxkBpWZSbKFT0JStDA9E1mQcSbc7AcfAYOXrhAZY4X9I4G1
+    groups: level2_admins
+  bart.simpson:
+    name: Bart Simpson
+    password: $6$GMIilel9Dp2VKzYs$AXVUEqlrIMkEftlYYlKDTo595x8MUpGVbzIv5A/2O8xkhfPBive/SclMkwzn07UJy7MmOPoZ8nF5ywdz7PJJz1
+    groups: level2_admins

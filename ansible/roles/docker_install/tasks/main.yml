@@ -1,0 +1,74 @@
+---
+# tasks file for docker_install
+- name: Install Docker for Debian based linux
+  when: ansible_os_family == "Debian"
+  block:
+    # FROM: https://docs.docker.com/engine/install/ubuntu/#install-using-the-repository
+    - name: Update apt cache
+      apt:
+        update_cache: true
+    - name: Install Packages
+      apt:
+        name: "{{ item }}"
+      with_items:
+        - ca-certificates
+        - curl
+    - name: Download Docker gpg public key
+      get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+        mode: 0644
+    - name: Read /etc/os-release
+      slurp:
+        src: /etc/os-release
+      register: slurp_reg
+    - name: Extract the Version Codename
+      set_fact:
+        version_codename: "{{ slurp_reg.content | b64decode | regex_search('VERSION_CODENAME=(\\w+)') | split('=') }}"
+    - name: Get dpkg architecture
+      shell:
+        cmd: dpkg --print-architecture
+      register: dpkg_arch_reg
+    - name: Create docker apt list
+      copy:
+        content: "deb [arch={{ dpkg_arch_reg.stdout }} signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ version_codename[1] }} stable"
+        dest: /etc/apt/sources.list.d/docker.list
+    - name: Update apt cache
+      apt:
+        update_cache: true
+    - name: Install docker and tools
+      apt:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - docker-ce 
+        - docker-ce-cli 
+        - containerd.io 
+        - docker-buildx-plugin 
+        - docker-compose-plugin
+- name: Install Docker for RedHat based linux
+  when: ansible_os_family == "RedHat"
+  block:
+    # FROM: https://docs.docker.com/engine/install/rhel/
+    - name: Install yum-utils
+      yum:
+        name: yum-utils
+        state: latest
+    - name: Configure docker yum repo
+      shell:
+        cmd: yum-config-manager --add-repo https://download.docker.com/linux/rhel/docker-ce.repo
+    - name: Install docker and tools
+      yum:
+        name: "{{ item }}"
+        state: latest
+      with_items:
+        - docker-ce 
+        - docker-ce-cli 
+        - containerd.io 
+        - docker-buildx-plugin 
+        - docker-compose-plugin
+    - name: Enable and Start docker
+      service:
+        name: docker
+        enabled: true
+        state: started

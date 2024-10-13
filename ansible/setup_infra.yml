@@ -1,0 +1,25 @@
+---
+# deploys all roles
+# usage: ansible-playbook setup_infra.yml -k -K -J
+#
+- hosts: "{{ target_hosts }}"
+  become: true
+  remote_user: nix-admin
+  gather_facts: no
+  vars:
+    target_hosts: linux # set to the appropriate target
+    debug: false
+  pre_tasks:
+    - name: Gather Selected Facts
+      setup:
+        gather_subset:
+          - distribution
+  roles:
+    - hostname_set
+    - timezone_set
+    - group_add
+    - user_add
+    - package_add
+    - docker_install
+    - docker_volume_create
+    - docker_run

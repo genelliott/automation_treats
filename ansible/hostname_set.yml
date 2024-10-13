@@ -1,0 +1,9 @@
+---
+- hosts: "{{ target_hosts }}"
+  become: true
+  remote_user: nix-admin
+  gather_facts: no
+  vars:
+    target_hosts: linux # set to the appropriate target
+  roles:
+    - hostname_set

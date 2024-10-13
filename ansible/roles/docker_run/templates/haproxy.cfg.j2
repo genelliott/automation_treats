@@ -1,0 +1,33 @@
+global
+  #stats socket /var/run/api.sock user haproxy group haproxy mode 660 level admin expose-fd listeners
+  log stdout format raw local0 info
+
+defaults
+  mode http
+  timeout client 10s
+  timeout connect 5s
+  timeout server 10s
+  timeout http-request 10s
+  log global
+
+#frontend stats
+#  bind *:8404
+#  stats enable
+#  stats uri /
+#  stats refresh 10s
+
+frontend prod_fe
+  bind :8080
+  default_backend prod_be
+
+backend prod_be
+  server s1 nginx01:80 check
+  server s2 nginx02:80 check
+
+frontend dev_fe
+  bind :8081
+  default_backend dev_be
+
+backend dev_be
+  server d1 nginx01-dev:80 check
+  server d2 nginx02-dev:80 check

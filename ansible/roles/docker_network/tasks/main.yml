@@ -1,0 +1,11 @@
+---
+# tasks file for docker_network
+- name: Create docker network
+  when: '"docker" in roles'
+  block:
+    - name: Create test_local docker network
+      docker_network:
+        name: test_local
+        ipam_config:
+          - subnet: 172.16.1.0/24
+ 
