@@ -50,7 +50,7 @@
         volumes: "{{ item.volumes }}"
         #ports: "{{ item.ports }}"
         restart_policy: unless-stopped
-        recreate: true
+        recreate: "{{ recreate_container }}"
         networks:
           - name: test_local
       with_items:
@@ -96,8 +96,8 @@
         volumes: /data/haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
         ports: 
           - 8080:8080
-          - 8081:8081
+          - 9090:9090
         restart_policy: unless-stopped
-        recreate: true
+        recreate: "{{ recreate_container }}"
         networks:
           - name: test_local

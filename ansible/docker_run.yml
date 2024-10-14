@@ -5,6 +5,7 @@
   gather_facts: no
   vars:
     target_hosts: linux # set to the appropriate target
+    recreate_container: true
   pre_tasks:
     - name: Gather Selected Facts
       setup:
